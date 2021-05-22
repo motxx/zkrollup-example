@@ -1,0 +1,12 @@
+{
+  "name": "zkrollup-example",
+  "version": "1.0.0",
+  "main": "rollup.js",
+  "repository": "git@github.com:motxx/zkrollup-example.git",
+  "author": "motxx <5776910+motxx@users.noreply.github.com>",
+  "license": "MIT",
+  "dependencies": {
+    "circomlib": "^0.5.2",
+    "ffjavascript": "^0.2.35"
+  }
+}
