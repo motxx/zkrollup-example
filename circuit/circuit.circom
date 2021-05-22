@@ -1,13 +1,22 @@
 include "./circomlib/smt/smtprocessor.circom";
 
-template Rollup() {
-    signal private input a;
-    signal private input b;
-    signal output out;
+template Rollup(nTxs) {
 
-//    component smtprocessor = SMTProcessor(4);
+    signal input oldRoot;
+    signal output newRoot;
 
-    out <== a*b;
+    // TODO: nLevels - JSのoperationごとに変わる値. どうしよう.
+    signal private input siblings[nLevels][nTxs];
+    signal private input oldKey[nTxs];
+    signal private input oldValue[nTxs];
+    signal private input isOld0[nTxs];
+    signal private input newKey[nTxs];
+    signal private input newValue[nTxs];
+    signal private input fnc[2][nTxs];
+
+    component smtprocessor = SMTProcessor(4);
+
+    newRoot <== oldRoot;
 }
 
-component main = Rollup();
+component main = Rollup(10);
