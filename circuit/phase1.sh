@@ -2,5 +2,14 @@
 
 set -eu
 
-snarkjs powersoftau new bn128 14 pot12_0000.ptau
-snarkjs powersoftau contribute pot12_0000.ptau pot12_0001.ptau --name="First contribution"
+if [ $# != 1 ]; then
+  echo 'specify num'
+  exit 1
+fi
+
+num=$1
+fname="pot${num}_0000.ptau"
+fname_aft="pot${num}_0001.ptau"
+
+snarkjs powersoftau new bn128 $num $fname
+snarkjs powersoftau contribute $fname $fname_aft --name="First contribution"

@@ -93,10 +93,10 @@ class Rollup {
 
   const mintTx = new Transaction(ZeroPubkey, AlicePubkey, 100);
   await rollup.processTx(mintTx, balanceTree);
-  const transferTx = new Transaction(AlicePubkey, BobPubkey, 25);
-  await rollup.processTx(transferTx);
-  const burnTx = new Transaction(AlicePubkey, ZeroPubkey, 10);
-  await rollup.processTx(burnTx);
+//  const transferTx = new Transaction(AlicePubkey, BobPubkey, 25);
+//  await rollup.processTx(transferTx);
+//  const burnTx = new Transaction(AlicePubkey, ZeroPubkey, 10);
+//  await rollup.processTx(burnTx);
 
   console.log(balanceTree);
   console.log(rollup.circuitInputJSON())

@@ -5,13 +5,13 @@ template Rollup(nUpdates, nLevels) {
     signal output newRoot;
     signal intermediateRoot;
 
-    signal private input siblings[nLevels][nUpdates];
+    signal private input siblings[nUpdates][nLevels];
     signal private input oldKey[nUpdates];
     signal private input oldValue[nUpdates];
     signal private input isOld0[nUpdates];
     signal private input newKey[nUpdates];
     signal private input newValue[nUpdates];
-    signal private input fnc[2][nUpdates];
+    signal private input fnc[nUpdates][2];
 
     intermediateRoot <== oldRoot;
 
@@ -22,7 +22,7 @@ template Rollup(nUpdates, nLevels) {
         component proc = SMTProcessor(nLevels);
         proc.oldRoot <== intermediateRoot;
         for (j = 0; j < nLevels; j++) {
-            proc.siblings[j] <== siblings[j][i];
+            proc.siblings[j] <== siblings[i][j];
         }
         proc.oldKey <== oldKey[i];
         proc.oldValue <== oldValue[i];
@@ -30,12 +30,19 @@ template Rollup(nUpdates, nLevels) {
         proc.newKey <== newKey[i];
         proc.newValue <== newValue[i];
         for (j = 0; j < 2; j++) {
-            proc.fnc[j] <== fnc[j][i];
+            proc.fnc[j] <== fnc[i][j];
         }
         intermediateRoot <== proc.newRoot;
+//        log(proc.siblings);
+        log(proc.oldKey);
+        log(proc.oldValue);
+        log(proc.isOld0);
+        log(proc.newKey);
+        log(proc.newValue);
+        log(intermediateRoot);
     }
 
     newRoot <== intermediateRoot;
 }
 
-component main = Rollup(4, 4);
+component main = Rollup(1, 2);
