@@ -44,6 +44,7 @@ class Rollup {
         optype === "insert" ? ['1', '0']
       : optype === "update" ? ['0', '1']
       :                       ['0', '0']);
+    console.log(resOperation);
   }
 
   async upsertBalance(pubkey, balance) {
@@ -93,8 +94,8 @@ class Rollup {
 
   const mintTx = new Transaction(ZeroPubkey, AlicePubkey, 100);
   await rollup.processTx(mintTx, balanceTree);
-//  const transferTx = new Transaction(AlicePubkey, BobPubkey, 25);
-//  await rollup.processTx(transferTx);
+  const transferTx = new Transaction(AlicePubkey, BobPubkey, 25);
+  await rollup.processTx(transferTx);
 //  const burnTx = new Transaction(AlicePubkey, ZeroPubkey, 10);
 //  await rollup.processTx(burnTx);
 

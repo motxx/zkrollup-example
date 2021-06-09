@@ -2,31 +2,37 @@
 
 set -eu
 
-if [ $# != 1 ]; then
-  echo 'specify num'
+if [ $# -lt 2 ]; then
+  echo 'specify num and circom name'
   exit 1
 fi
 
 num=$1
-taufname="pot${num}_0000.ptau"
-taufname_aft="pot${num}_0001.ptau"
-taufname_final="pot${num}_final.ptau"
+circom_name=$2
+tau_fname="pot${num}_0000.ptau"
+tau_fname_aft="pot${num}_0001.ptau"
+tau_fname_final="pot${num}_final.ptau"
 
 # rm -f *.r1cs *.sym *.wasm *.ptau
 
-circom circuit.circom --r1cs --wasm --sym
-
 # phase 1
-snarkjs powersoftau new bn128 $num $taufname -v
-snarkjs powersoftau contribute $taufname $taufname_aft --name="First contribution" -v
+if [ $3 -eq 1 ]; then
+  snarkjs powersoftau new bn128 $num $tau_fname -v
+  snarkjs powersoftau contribute $tau_fname $tau_fname_aft --name="First contribution" -v
+  # prepare phase 2
+  snarkjs powersoftau prepare phase2 $tau_fname_aft $tau_fname_final
+fi
+
+# compile
+if [ $4 -eq 1 ]; then
+  circom ${circom_name}.circom --r1cs --wasm --sym
+fi
 
 # phase 2
-snarkjs powersoftau prepare phase2 $taufname_aft $taufname_final
+snarkjs zkey new ${circom_name}.r1cs $tau_fname_final ${circom_name}_0000.zkey
+snarkjs zkey contribute ${circom_name}_0000.zkey ${circom_name}_final.zkey --name="1st Contributor Name"
 
-snarkjs zkey new circuit.r1cs $taufname_final circuit_0000.zkey
-snarkjs zkey contribute circuit_0000.zkey circuit_final.zkey --name="1st Contributor Name"
+snarkjs zkey export verificationkey ${circom_name}_final.zkey verification_key.json
 
-snarkjs zkey export verificationkey circuit_final.zkey verification_key.json
-
-snarkjs powersoftau verify $taufname_final
-snarkjs zkey verify circuit.r1cs $taufname_final circuit_final.zkey
+snarkjs powersoftau verify $tau_fname_final
+snarkjs zkey verify ${circom_name}.r1cs $tau_fname_final ${circom_name}_final.zkey
